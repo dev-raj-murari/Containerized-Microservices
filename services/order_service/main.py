@@ -1,6 +1,6 @@
 """Order & Checkout Service."""
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, Optional
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -57,11 +57,11 @@ def create_order(order_data: OrderCreateRequest, user_id: str = Depends(get_curr
     record = {
         "id": order_id,
         "user_id": user_id,
-        "items": [item.dict() for item in order_data.items],
+        "items": [item.model_dump() for item in order_data.items],
         "total_amount": round(total_amount, 2),
         "status": "CONFIRMED",
         "shipping_address": order_data.shipping_address,
-        "created_at": datetime.utcnow(),
+        "created_at": datetime.now(timezone.utc),
     }
     orders_db[order_id] = record
     return OrderResponse(**record)

@@ -1,6 +1,6 @@
 """User Authentication & Profile Service."""
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, Optional
 from fastapi import FastAPI, HTTPException, Depends, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
@@ -72,7 +72,7 @@ def register(user_data: UserRegisterRequest):
         "email": user_data.email,
         "password_hash": get_password_hash(user_data.password),
         "role": user_data.role,
-        "created_at": datetime.utcnow(),
+        "created_at": datetime.now(timezone.utc),
         "is_active": True,
     }
     users_db[user_id] = record

@@ -1,7 +1,7 @@
 """Shared schemas, utilities, and security primitives across microservices."""
-from pydantic import BaseModel, EmailStr, Field
+from pydantic import BaseModel, Field
 from typing import Optional, Dict, Any, List
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
 import uuid
 
@@ -14,7 +14,7 @@ class HealthCheckResponse(BaseModel):
     service: str
     status: ServiceHealthStatus
     version: str = "1.0.0"
-    timestamp: datetime = Field(default_factory=datetime.utcnow)
+    timestamp: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     details: Optional[Dict[str, Any]] = None
 
 class TokenPayload(BaseModel):
